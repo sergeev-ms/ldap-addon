@@ -67,8 +67,7 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
 
     @Inject
     private Messages messages;
-    @Inject
-    private UsersRepository usersRepository;
+
     @Inject
     private CubaUserService cubaUserService;
 
@@ -78,12 +77,6 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
         if (!checkUserSupportsAddonLogin(credentials)) {
             return null;
         }
-
-
-        if (RememberMeCredentials.class.isAssignableFrom(credentials.getClass())) {
-            // FIXME: 01.02.2021
-        }
-
 
         LoginPasswordCredentials loginPasswordCredentials = (LoginPasswordCredentials) credentials;
 
@@ -151,7 +144,7 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
         }
 
         if (webAuthConfig.getStandardAuthenticationUsers().contains(login)) {
-            log.debug("User {} is not allowed to use external login");
+            log.debug("User {} is not allowed to use external login", login);
             return false;
         }
         return true;
