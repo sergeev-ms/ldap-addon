@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2019 Haulmont.
+ * Copyright (c) 2008-2021 Haulmont.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package com.haulmont.addon.ldap.core.rule.custom;
+package com.haulmont.addon.ldap.core.service;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.haulmont.cuba.security.entity.User;
 
-/**
- * Every Custom rule must have this annotation
- */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface LdapMatchingRule {
+public interface CubaUserService {
+    String NAME = "ldap_CubaUserService";
 
-    String name();
-    String condition();
+    User getCubaUserByLogin(String login);
 }

@@ -45,43 +45,8 @@ public interface LdapPropertiesConfig extends Config {
     String getContextSourcePassword();
 
     @Source(type = SourceType.APP)
-    @Property("ldap.sessionExpiringPeriodSec")
-    int getSessionExpiringPeriodSec();
-
-    @Source(type = SourceType.APP)
-    @Property("cuba.web.standardAuthenticationUsers")
-    @Factory(factory = CommaSeparatedStringListTypeFactory.class)
-    @DefaultString("admin,anonymous")
-    List<String> getStandardAuthenticationUsers();
-
-    @Source(type = SourceType.APP)
     @Property("ldap.addonEnabled")
     Boolean getLdapAddonEnabled();
-
-    @Source(type = SourceType.APP)
-    @Property("ldap.expiringSessionsEnable")
-    Boolean getExpiringSessionsEnable();
-
-    @Source(type = SourceType.APP)
-    @Property("ldap.userSynchronizationBatchSize")
-    Integer getUserSynchronizationBatchSize();
-
-    @Source(type = SourceType.APP)
-    @Property("ldap.userSynchronizationOnlyActiveProperty")
-    Boolean getUserSynchronizationOnlyActiveProperty();
-
-    @Source(type = SourceType.APP)
-    @Property("ldap.cubaGroupForSynchronization")
-    @Factory(factory = CommaSeparatedStringListTypeFactory.class)
-    List<String> getCubaGroupForSynchronization();
-
-    @Source(type = SourceType.APP)
-    @Property("ldap.cubaGroupForSynchronizationInverse")
-    Boolean getCubaGroupForSynchronizationInverse();
-
-    @Source(type = SourceType.APP)
-    @Property("ldap.synchronizeCommonInfoFromLdap")
-    Boolean getSynchronizeCommonInfoFromLdap();
 
     @Source(type = SourceType.APP)
     @Property("ldap.synchronizeInfoAfterLogin")
@@ -95,23 +60,7 @@ public interface LdapPropertiesConfig extends Config {
 
     void setContextSourcePassword(String contextSourcePassword);
 
-    void setSessionExpiringPeriodSec(int sessionExpiringPeriod);
-
-    void setStandardAuthenticationUsers(List<String> standardAuthenticationUsers);
-
     void setLdapAddonEnabled(Boolean ldapAddonEnabled);
-
-    void setExpiringSessionsEnable(Boolean expiringSessionsEnable);
-
-    void setUserSynchronizationBatchSize(Integer userSynchronizationBatchSize);
-
-    void setUserSynchronizationOnlyActiveProperty(Boolean userSynchronizationOnlyActiveProperty);
-
-    void setCubaGroupForSynchronization(List<String> cubaGroupForSynchronization);
-
-    void setCubaGroupForSynchronizationInverse(Boolean cubaGroupForSynchronizationInverse);
-
-    void setSynchronizeCommonInfoFromLdap(Boolean synchronizeCommonInfoFromLdap);
 
     void setSynchronizeInfoAfterLogin(Boolean synchronizeInfoAfterLogin);
 

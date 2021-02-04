@@ -16,6 +16,7 @@
 
 package com.haulmont.addon.ldap.entity;
 
+import com.haulmont.chile.core.annotations.MetaClass;
 import com.haulmont.chile.core.annotations.MetaProperty;
 import com.haulmont.cuba.core.entity.BaseUuidEntity;
 import com.haulmont.cuba.core.entity.Updatable;
@@ -27,8 +28,7 @@ import java.util.Date;
 /**
  * Configuration of the LDAP addon
  */
-@Table(name = "LDAP_LDAP_CONFIG")
-@Entity(name = "ldap$LdapPropertiesConfig")
+@MetaClass(name = "ldap$LdapPropertiesConfig")
 public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {
     private static final long serialVersionUID = 7194701707147252828L;
 

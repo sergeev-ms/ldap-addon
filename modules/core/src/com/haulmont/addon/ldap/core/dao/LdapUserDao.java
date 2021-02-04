@@ -16,13 +16,12 @@
 
 package com.haulmont.addon.ldap.core.dao;
 
-import com.haulmont.addon.ldap.core.spring.events.LdapFailedAuthenticationEvent;
 import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
+import com.haulmont.addon.ldap.core.spring.events.LdapFailedAuthenticationEvent;
 import com.haulmont.addon.ldap.core.utils.LdapConstants;
 import com.haulmont.addon.ldap.core.utils.LdapUserMapper;
 import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.entity.LdapConfig;
-import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
 import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.security.global.LoginException;
@@ -38,7 +37,6 @@ import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.Filter;
 import org.springframework.ldap.filter.HardcodedFilter;
-import org.springframework.ldap.query.ContainerCriteria;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.ldap.query.SearchScope;
@@ -108,20 +106,6 @@ public class LdapUserDao {
         return ldapTemplate.search(query, new LdapUserMapper(ldapConfigDao.getLdapConfig()));
     }
 
-    public LdapUser findLdapUserByFilter(List<SimpleRuleCondition> conditions, String login) {
-        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
-        Filter filter = parseSimpleRuleConditions(conditions);
-        if (filter == null) {
-            return null;
-        }
-        LdapQuery query = LdapQueryBuilder.query()
-                .searchScope(SearchScope.SUBTREE)
-                .timeLimit(10_000)
-                .countLimit(1)
-                .filter(addUserBaseAndLoginFilter(login, filter));
-        List<LdapUser> list = ldapTemplate.search(query, new LdapUserMapper(ldapConfig));
-        return (list == null || list.isEmpty()) ? null : list.get(0);
-    }
 
     public void authenticateLdapUser(String login, String password, Locale messagesLocale) throws LoginException {
         try {
@@ -206,16 +190,6 @@ public class LdapUserDao {
         return foundDomain;
     }
 
-    public List<LdapUser> getLdapUsers(List<String> logins) {
-        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
-        LdapQuery query = LdapQueryBuilder.query()
-                .searchScope(SearchScope.SUBTREE)
-                .timeLimit(10_000)
-                .filter(createUserBaseAndLoginsFilter(logins));
-        return ldapTemplate.search(query, new LdapUserMapper(ldapConfig));
-    }
-
-
     private Filter createUserBaseAndLoginFilter(String login) {
         LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         Filter ef = new EqualsFilter(ldapConfig.getLoginAttribute(), login);
@@ -229,59 +203,6 @@ public class LdapUserDao {
         return andFilter;
     }
 
-    private Filter addUserBaseAndLoginFilter(String login, Filter filter) {
-        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
-        Filter resultFilter;
-        Filter ef = new EqualsFilter(ldapConfig.getLoginAttribute(), login);
-        resultFilter = ef;
-        if (StringUtils.isNotEmpty(ldapConfig.getUserBase())) {
-            AndFilter andFilter = new AndFilter();
-            andFilter.and(ef);
-            andFilter.and(new HardcodedFilter("(" + ldapConfig.getUserBase() + ")"));
-            resultFilter = andFilter;
-        }
-        AndFilter andFilter = new AndFilter();
-        andFilter.and(resultFilter);
-        andFilter.and(filter);
-        return andFilter;
-    }
-
-    private Filter parseSimpleRuleConditions(List<SimpleRuleCondition> conditions) {
-        Filter prevFilter = null;
-        for (SimpleRuleCondition simpleRuleCondition : conditions) {
-            String attributeName = simpleRuleCondition.getAttribute();
-            if (StringUtils.isNotEmpty(attributeName)) {
-                Filter ef = new EqualsFilter(attributeName, simpleRuleCondition.getAttributeValue());
-                if (prevFilter != null) {
-                    AndFilter andFilter = new AndFilter();
-                    andFilter.and(ef);
-                    andFilter.and(prevFilter);
-                    prevFilter = andFilter;
-                } else {
-                    prevFilter = ef;
-                }
-            }
-        }
-        return prevFilter;
-    }
-
-    private Filter createUserBaseAndLoginsFilter(List<String> logins) {
-        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
-        ContainerCriteria containerCriteria = LdapQueryBuilder.query().where(ldapConfig.getLoginAttribute()).is(logins.get(0));
-        for (String login : logins.subList(1, logins.size())) {
-            containerCriteria = containerCriteria.or(ldapConfig.getLoginAttribute()).is(login);
-        }
-
-        Filter ef = containerCriteria.filter();
-        if (StringUtils.isEmpty(ldapConfig.getUserBase())) {
-            return ef;
-        }
-        AndFilter andFilter = new AndFilter();
-        andFilter.and(ef);
-        andFilter.and(new HardcodedFilter("(" + ldapConfig.getUserBase() + ")"));
-
-        return andFilter;
-    }
 
     /**
      * Represents old-style windows login i.e. "DOMAIN\\user" form

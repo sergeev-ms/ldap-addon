@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2019 Haulmont.
+ * Copyright (c) 2008-2021 Haulmont.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package com.haulmont.addon.ldap.web.scriptingmatchingrule;
+package com.haulmont.addon.ldap.core.service;
 
-import com.haulmont.cuba.gui.components.AbstractAction;
+import com.haulmont.addon.ldap.core.dao.CubaUserDao;
+import com.haulmont.cuba.security.entity.User;
+import org.springframework.stereotype.Service;
 
-public abstract class EmptyGroovyScriptHelpAction extends AbstractAction {
+import javax.inject.Inject;
 
-    public EmptyGroovyScriptHelpAction(String id) {
-        super(id);
-    }
+@Service(CubaUserService.NAME)
+public class CubaUserServiceBean implements CubaUserService {
+    @Inject
+    private CubaUserDao cubaUserDao;
 
     @Override
-    public String getIcon() {
-        return "icons/question-white.png";
+    public User getCubaUserByLogin(String login) {
+        return cubaUserDao.getCubaUserByLogin(login);
     }
-
-
 }

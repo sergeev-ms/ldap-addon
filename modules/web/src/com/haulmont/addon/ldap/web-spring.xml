@@ -31,18 +31,12 @@
                   ref="cuba_ServerSelector"/>
         <property name="remoteServices">
             <map>
-                <entry key="ldap_UserSynchronizationService"
-                       value="com.haulmont.addon.ldap.service.UserSynchronizationService"/>
-                <entry key="ldap_LdapConnectionTesterService" value="com.haulmont.addon.ldap.service.LdapService"/>
-                <entry key="ldap_MatchingRuleService" value="com.haulmont.addon.ldap.service.MatchingRuleService"/>
                 <entry key="ldap_AuthUserService" value="com.haulmont.addon.ldap.service.AuthUserService"/>
+                <entry key="ldap_CubaUserService" value="com.haulmont.addon.ldap.core.service.CubaUserService"/>
             </map>
         </property>
     </bean>
 
-    <task:scheduled-tasks scheduler="scheduler">
-        <task:scheduled ref="ldap_ExpiredSessionWatcher" method="notifyExpiringSessions" cron="${ldap.expiringSessionNotificationCron?:*/30 * * * * *}"/>
-    </task:scheduled-tasks>
     <gui:screens base-packages="com.haulmont.addon.ldap.web"/>
 
 </beans>

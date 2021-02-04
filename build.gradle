@@ -47,7 +47,6 @@ def modulePrefix = 'ldap'
 
 def globalModule = project(":${modulePrefix}-global")
 def coreModule = project(":${modulePrefix}-core")
-def guiModule = project(":${modulePrefix}-gui")
 def webModule = project(":${modulePrefix}-web")
 
 def servletApi = 'org.apache.tomcat:tomcat-servlet-api:8.0.26'
@@ -59,8 +58,8 @@ apply(plugin: 'addon-gradle-plugin')
 cuba {
     artifact {
         group = 'com.haulmont.addon.ldap'
-        version = '1.5.2f'
-        isSnapshot = false
+        version = '1.5.2m'
+        isSnapshot = true
     }
     tomcat {
         dir = "$project.rootDir/deploy/tomcat"
@@ -99,7 +98,7 @@ def hsql = 'org.hsqldb:hsqldb:2.4.1'
 
 def dbNameParam = 'ldap'
 
-configure([globalModule, coreModule, guiModule, webModule]) {
+configure([globalModule, coreModule, webModule]) {
     apply(plugin: 'java')
     apply(plugin: 'maven')
     apply(plugin: 'cuba')
@@ -185,18 +184,6 @@ configure(coreModule) {
     }
 }
 
-configure(guiModule) {
-    dependencies {
-        compile(globalModule)
-
-    }
-
-    task deployConf(type: Copy) {
-        from file('src')
-        include "com/haulmont/addon/ldap/**"
-        into "$cuba.appHome/${modulePrefix}/conf"
-    }
-}
 
 configure(webModule) {
     configurations {
@@ -205,7 +192,7 @@ configure(webModule) {
 
     dependencies {
         compileOnly(servletApi)
-        compile(guiModule)
+        compile(globalModule)
 
     }
 
@@ -236,7 +223,7 @@ configure(webModule) {
 
     task deploy(dependsOn: [assemble, cleanConf], type: CubaDeployment) {
         appName = "${modulePrefix}"
-        appJars(modulePrefix + '-global', modulePrefix + '-gui', modulePrefix + '-web')
+        appJars(modulePrefix + '-global', modulePrefix + '-web')
     }
 }
 

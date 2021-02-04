@@ -18,9 +18,9 @@ package com.haulmont.addon.ldap.web.security.ldapcomponent;
 
 import com.google.common.collect.ImmutableMap;
 import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
-import com.haulmont.addon.ldap.dto.UserSynchronizationResultDto;
+import com.haulmont.addon.ldap.core.service.CubaUserService;
 import com.haulmont.addon.ldap.service.AuthUserService;
-import com.haulmont.addon.ldap.service.UserSynchronizationService;
+import com.haulmont.cuba.client.sys.UsersRepository;
 import com.haulmont.cuba.core.global.ClientType;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.sys.ConditionalOnAppProperty;
@@ -39,7 +39,6 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.haulmont.cuba.web.security.ExternalUserCredentials.EXTERNAL_AUTH_USER_SESSION_ATTRIBUTE;
 
@@ -55,9 +54,6 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
     private final Logger log = LoggerFactory.getLogger(LdapAddonLoginProvider.class);
 
     @Inject
-    private UserSynchronizationService userSynchronizationService;
-
-    @Inject
     private AuthUserService authUserService;
 
     @Inject
@@ -71,6 +67,10 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
 
     @Inject
     private Messages messages;
+    @Inject
+    private UsersRepository usersRepository;
+    @Inject
+    private CubaUserService cubaUserService;
 
     @Nullable
     @Override
@@ -79,17 +79,11 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
             return null;
         }
 
-        if (ldapPropertiesConfig.getSynchronizeInfoAfterLogin()) {
-            if (RememberMeCredentials.class.isAssignableFrom(credentials.getClass())) {
-                UserSynchronizationResultDto userSynchronizationResult =
-                        userSynchronizationService.synchronizeUser(((RememberMeCredentials) credentials).getLogin(), true, null, null, null);
-                if (userSynchronizationResult.isInactiveUser()) {
-                    throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
-                            "LoginException.InactiveUserLoginAttempt", ((RememberMeCredentials) credentials).getLocale()));
-                }
-                return null;
-            }
+
+        if (RememberMeCredentials.class.isAssignableFrom(credentials.getClass())) {
+            // FIXME: 01.02.2021
         }
+
 
         LoginPasswordCredentials loginPasswordCredentials = (LoginPasswordCredentials) credentials;
 
@@ -98,18 +92,11 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
                 loginPasswordCredentials.getPassword(),
                 loginPasswordCredentials.getLocale());
 
-        if (ldapPropertiesConfig.getSynchronizeInfoAfterLogin()) {
-            UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true, null, null, null);
-            if (userSynchronizationResult.isInactiveUser()) {
-                throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
-                        "LoginException.InactiveUserLoginAttempt", loginPasswordCredentials.getLocale()));
-            }
-        } else {
-            final User cubaUser = userSynchronizationService.getExistingCubaUser(loginPasswordCredentials.getLogin());
-            if (cubaUser == null)
-                throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
-                        "LoginException.UserNotRegistered", loginPasswordCredentials.getLocale()));
-        }
+
+        final User cubaUser = cubaUserService.getCubaUserByLogin(loginPasswordCredentials.getLogin());
+        if (cubaUser == null)
+            throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
+                    "LoginException.UserNotRegistered", loginPasswordCredentials.getLocale()));
 
         TrustedClientCredentials tcCredentials = new TrustedClientCredentials(
                 loginPasswordCredentials.getLogin(),
