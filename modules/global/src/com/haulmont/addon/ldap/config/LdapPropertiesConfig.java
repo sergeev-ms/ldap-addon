@@ -48,10 +48,6 @@ public interface LdapPropertiesConfig extends Config {
     @Property("ldap.addonEnabled")
     Boolean getLdapAddonEnabled();
 
-    @Source(type = SourceType.APP)
-    @Property("ldap.synchronizeInfoAfterLogin")
-    Boolean getSynchronizeInfoAfterLogin();
-
     void setContextSourceUrl(String contextSourceUrl);
 
     void setContextSourceBase(String contextSourceBase);
@@ -61,7 +57,5 @@ public interface LdapPropertiesConfig extends Config {
     void setContextSourcePassword(String contextSourcePassword);
 
     void setLdapAddonEnabled(Boolean ldapAddonEnabled);
-
-    void setSynchronizeInfoAfterLogin(Boolean synchronizeInfoAfterLogin);
 
 }
