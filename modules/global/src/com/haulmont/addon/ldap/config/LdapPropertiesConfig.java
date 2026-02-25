@@ -48,6 +48,10 @@ public interface LdapPropertiesConfig extends Config {
     @Property("ldap.addonEnabled")
     Boolean getLdapAddonEnabled();
 
+    @Source(type = SourceType.APP)
+    @Property("ldap.loginAttribute")
+    String getLdapLoginAttribute();
+
     void setContextSourceUrl(String contextSourceUrl);
 
     void setContextSourceBase(String contextSourceBase);
@@ -57,5 +61,7 @@ public interface LdapPropertiesConfig extends Config {
     void setContextSourcePassword(String contextSourcePassword);
 
     void setLdapAddonEnabled(Boolean ldapAddonEnabled);
+
+    void setLdapLoginAttribute(String attribute);
 
 }

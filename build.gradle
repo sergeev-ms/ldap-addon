@@ -58,8 +58,8 @@ apply(plugin: 'addon-gradle-plugin')
 cuba {
     artifact {
         group = 'com.haulmont.addon.ldap'
-        version = '1.5.2m'
-        isSnapshot = true
+        version = '1.5.2n'
+        isSnapshot = false
     }
     tomcat {
         dir = "$project.rootDir/deploy/tomcat"

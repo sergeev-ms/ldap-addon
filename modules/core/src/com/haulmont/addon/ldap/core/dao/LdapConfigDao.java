@@ -41,6 +41,7 @@ public class LdapConfigDao {
         lc.setContextSourceUrl(ldapContextConfig.getContextSourceUrl());
         lc.setContextSourceBase(ldapContextConfig.getContextSourceBase());
         lc.setContextSourceUserName(ldapContextConfig.getContextSourceUserName());
+        lc.setLoginAttribute(ldapContextConfig.getLdapLoginAttribute());
 
         return lc;
 

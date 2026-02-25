@@ -19,23 +19,22 @@ package com.haulmont.addon.ldap.entity;
 import com.haulmont.chile.core.annotations.MetaClass;
 import com.haulmont.chile.core.annotations.MetaProperty;
 import com.haulmont.cuba.core.entity.BaseUuidEntity;
-import com.haulmont.cuba.core.entity.Updatable;
-import com.haulmont.cuba.core.entity.Versioned;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Transient;
 
 /**
  * Configuration of the LDAP addon
  */
 @MetaClass(name = "ldap$LdapPropertiesConfig")
-public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {
+public class LdapConfig extends BaseUuidEntity {
     private static final long serialVersionUID = 7194701707147252828L;
 
-    @Column(name = "SCHEMA_BASE")
+    @Transient
+    @MetaProperty
     private String schemaBase;
 
-    @Column(name = "DEFAULT_ACCESS_GROUP_NAME")
+    @Transient
+    @MetaProperty
     protected String defaultAccessGroupName;
 
     @Transient
@@ -50,63 +49,69 @@ public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {
     @MetaProperty
     protected String contextSourceUrl;
 
-    @Column(name = "LDAP_USER_OBJECT_CLASSES", length = 2000)
+    @Transient
+    @MetaProperty
     private String ldapUserObjectClasses;
 
-    @Column(name = "OBJECT_CLASS_PROPERTY_NAME")
+    @Transient
+    @MetaProperty
     private String objectClassPropertyName;
 
-    @Column(name = "ATTRIBUTE_PROPERTY_NAMES", length = 2000)
+    @Transient
+    @MetaProperty
     private String attributePropertyNames;
 
-    @Column(name = "LOGIN_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String loginAttribute;
 
-    @Column(name = "EMAIL_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String emailAttribute;
 
-    @Column(name = "CN_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String cnAttribute;
 
-    @Column(name = "SN_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String snAttribute;
 
-    @Column(name = "GIVEN_NAME_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     protected String givenNameAttribute;
 
-    @Column(name = "MIDDLE_NAME_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     protected String middleNameAttribute;
 
-    @Column(name = "MEMBER_OF_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String memberOfAttribute;
 
-    @Column(name = "ACCESS_GROUP_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String accessGroupAttribute;
 
-    @Column(name = "POSITION_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String positionAttribute;
 
-    @Column(name = "OU_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String ouAttribute;
 
-    @Column(name = "LANGUAGE_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String languageAttribute;
 
-    @Column(name = "INACTIVE_USER_ATTRIBUTE")
+    @Transient
+    @MetaProperty
     private String inactiveUserAttribute;
 
-    @Column(name = "USER_BASE")
+    @Transient
+    @MetaProperty
     private String userBase;
-
-    @Column(name = "UPDATE_TS")
-    private Date updateTs;
-
-    @Column(name = "UPDATED_BY", length = 50)
-    private String updatedBy;
-
-    @Version
-    @Column(name = "VERSION", nullable = false)
-    private Integer version;
 
     public void setDefaultAccessGroupName(String defaultAccessGroupName) {
         this.defaultAccessGroupName = defaultAccessGroupName;
@@ -281,37 +286,5 @@ public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {
     public String getUserBase() {
         return userBase;
     }
-
-
-    @Override
-    public void setUpdateTs(Date updateTs) {
-        this.updateTs = updateTs;
-    }
-
-    @Override
-    public Date getUpdateTs() {
-        return updateTs;
-    }
-
-    @Override
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    @Override
-    public String getUpdatedBy() {
-        return updatedBy;
-    }
-
-    @Override
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    @Override
-    public Integer getVersion() {
-        return version;
-    }
-
 
 }
